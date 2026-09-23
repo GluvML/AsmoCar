@@ -1,0 +1,1507 @@
+/* ==========================================================
+   SETTINGS.CSS — Settings Screen
+   CO2 / Temperature / Humidity Monitor
+   ========================================================== */
+
+/* ── Screen padding ───────────────────────────────────────── */
+#screen-settings {
+  padding-top: var(--sp-4);
+}
+
+.settings-content {
+  padding-bottom: var(--sp-32);
+}
+
+/* ── Settings Page Title ──────────────────────────────────── */
+.settings-header {
+  padding: var(--sp-16);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ── Setting Group ────────────────────────────────────────── */
+/* Support both .setting-group and .settings-group (JS uses .settings-group) */
+.setting-group,
+.settings-group {
+  margin: 0 var(--sp-16) var(--sp-16);
+  padding: var(--sp-20);
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: none !important;
+  border-radius: var(--radius-22);
+  box-shadow: var(--shadow-card);
+}
+
+.setting-group-title,
+.settings-group-title {
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: var(--sp-12);
+}
+
+.settings-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  margin-bottom: var(--sp-12);
+}
+
+.settings-group-icon {
+  font-size: 1rem;
+}
+
+/* ── Setting Row / Setting Item ──────────────────────────── */
+.setting-row,
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  padding: var(--sp-12) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.setting-row:last-child,
+.setting-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.setting-row:first-of-type,
+.setting-item:first-of-type {
+  padding-top: 0;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.setting-label .setting-icon {
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.setting-value {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* ── Setting Control ─────────────────────────────────────── */
+.setting-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-8);
+  flex-shrink: 0;
+}
+
+.setting-slider-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  width: 140px;
+}
+
+.setting-slider,
+.setting-control input[type="range"] {
+  width: 100%;
+}
+
+.setting-select {
+  padding: 6px 28px 6px 12px;
+  background: var(--color-pill-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-10);
+  color: var(--color-text-primary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  min-width: 100px;
+  max-width: 220px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='rgba(255,255,255,0.5)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+[data-theme="light"] .setting-select {
+  background-color: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='rgba(15,23,42,0.6)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+}
+
+.setting-select:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.setting-select option,
+select option {
+  background-color: #1a1e36;
+  color: #ffffff;
+}
+
+/* ── Setting Input ───────────────────────────────────────── */
+input.setting-input,
+.setting-control input.setting-input,
+.setting-input {
+  background: var(--color-pill-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-10);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 7px 12px;
+  width: 140px !important;
+  max-width: 140px !important;
+  text-align: right;
+  outline: none;
+  flex-shrink: 0;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+
+.setting-input:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .setting-input {
+  background: #ffffff !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .setting-input:focus {
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.1) !important;
+}
+
+/* ── Toggle Group ────────────────────────────────────────── */
+.toggle-group {
+  display: inline-flex;
+  gap: 2px;
+  background: var(--color-pill-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-10);
+  padding: 3px;
+}
+
+.toggle-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-8);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.toggle-btn.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .toggle-group {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .toggle-btn {
+  color: #64748b;
+}
+
+[data-theme="light"] .toggle-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* ── Threshold Control / Slider ───────────────────────────── */
+.threshold-control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  width: 100%;
+  padding-top: var(--sp-8);
+}
+
+.threshold-slider {
+  width: 100%;
+}
+
+.threshold-slider input[type="range"] {
+  width: 100%;
+}
+
+/* Minimalist slider thumbs - unified white */
+.threshold-slider[data-type="co2"] input[type="range"]::-webkit-slider-thumb,
+.threshold-slider[data-type="temp"] input[type="range"]::-webkit-slider-thumb,
+.threshold-slider[data-type="humidity"] input[type="range"]::-webkit-slider-thumb {
+  background: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.threshold-slider[data-type="co2"] input[type="range"]::-moz-range-thumb,
+.threshold-slider[data-type="temp"] input[type="range"]::-moz-range-thumb,
+.threshold-slider[data-type="humidity"] input[type="range"]::-moz-range-thumb {
+  background: #ffffff !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.threshold-values {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.threshold-values .current-value {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* ── Room List ────────────────────────────────────────────── */
+.room-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.room-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: border-color var(--dur-fast),
+              background var(--dur-fast);
+}
+
+.room-item:hover {
+  border-color: var(--color-border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.room-info .room-icon {
+  font-size: 1rem;
+}
+
+.room-info .room-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.room-item .room-actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sp-4);
+}
+
+.room-btn {
+  padding: 4px 8px;
+  border-radius: var(--radius-8);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  transition: color var(--dur-fast),
+              background var(--dur-fast);
+}
+
+.room-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.room-delete {
+  color: rgba(255, 71, 87, 0.6) !important;
+}
+
+.room-delete:hover {
+  color: var(--color-danger) !important;
+  background: rgba(255, 71, 87, 0.1) !important;
+}
+
+.room-delete:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Add Room Button ──────────────────────────────────────── */
+.btn-add-room,
+.add-room-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-8);
+  width: 100%;
+  padding: var(--sp-12);
+  margin-top: var(--sp-8);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--color-border);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--dur-fast),
+              border-color var(--dur-fast),
+              color var(--dur-fast);
+}
+
+.btn-add-room:hover,
+.add-room-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-primary);
+}
+
+/* ── Modal extras ────────────────────────────────────────── */
+.modal-field {
+  margin-bottom: var(--sp-8);
+}
+
+.modal-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--sp-4);
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-12);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: rgba(255, 107, 107, 0.4);
+}
+
+.modal-message {
+  text-align: center;
+}
+
+.modal-warning-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: var(--sp-8);
+}
+
+.modal-warning-text {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: var(--sp-4);
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-secondary);
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: var(--sp-4);
+  transition: color var(--dur-fast);
+}
+
+.modal-close:hover {
+  color: var(--color-text-primary);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── About Info ──────────────────────────────────────────── */
+.about-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.about-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--sp-8) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.about-row:last-child {
+  border-bottom: none;
+}
+
+.about-label {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.about-value {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ── Version / Footer ─────────────────────────────────────── */
+.settings-footer {
+  text-align: center;
+  padding: var(--sp-24) var(--sp-16) var(--sp-32);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.5px;
+}
+
+/* ── Bluetooth BLE Scanner styling ───────────────────────── */
+.ble-scanner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-16);
+  padding: var(--sp-16) 0;
+}
+
+.ble-radar-circle {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(0, 210, 255, 0.05);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--sp-8);
+}
+
+.ble-radar-circle::before,
+.ble-radar-circle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  animation: ble-radar-pulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  opacity: 0;
+}
+
+.ble-radar-circle::after {
+  animation-delay: 1s;
+}
+
+.ble-radar-icon {
+  font-size: 2rem;
+  color: var(--color-accent);
+  animation: ble-icon-pulse 2s infinite ease-in-out;
+}
+
+@keyframes ble-radar-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes ble-icon-pulse {
+  0%, 100% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.8));
+  }
+}
+
+.ble-status-text {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.ble-device-list {
+  width: 100%;
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  margin-top: var(--sp-8);
+  padding-right: 4px;
+}
+
+/* Scrollbar styling for device list */
+.ble-device-list::-webkit-scrollbar {
+  width: 4px;
+}
+.ble-device-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 2px;
+}
+.ble-device-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.ble-device-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-12);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-12);
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.ble-device-item:hover {
+  background: rgba(0, 210, 255, 0.08);
+  border-color: rgba(0, 210, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 210, 255, 0.1);
+}
+
+.ble-device-info {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+.ble-device-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.ble-device-name-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.ble-device-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ble-device-id {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+}
+
+.ble-device-rssi {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.ble-rssi-bar {
+  width: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 1px;
+}
+
+.ble-rssi-bar:nth-child(1) { height: 4px; }
+.ble-rssi-bar:nth-child(2) { height: 7px; }
+.ble-rssi-bar:nth-child(3) { height: 10px; }
+.ble-rssi-bar:nth-child(4) { height: 13px; }
+
+.ble-device-item:hover .ble-rssi-bar {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.ble-device-item:hover .ble-rssi-bar.active {
+  background: #00d2ff;
+}
+
+.ble-rssi-bar.active {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Connection Spinner */
+.ble-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #00d2ff;
+  border-radius: 50%;
+  animation: ble-spin 0.8s linear infinite;
+}
+
+@keyframes ble-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Settings Visual Upgrades ────────────────────────────── */
+.setting-item {
+  align-items: center !important;
+  min-height: 50px;
+  gap: var(--sp-12);
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  color: var(--color-text-primary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.setting-label > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Setting Icon Wrapper */
+.setting-icon-wrapper {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
+}
+
+/* Color codes for settings icons */
+/* Minimalist Settings Icons - Monochromatic slate */
+.setting-icon-wrapper {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+.icon-co2-min, .icon-co2-max, .icon-temp-min, .icon-temp-max, .icon-humidity-min, .icon-humidity-max, .icon-bluetooth, .icon-interval, .icon-unit, .icon-lang, .icon-alerts {
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+/* ── Bluetooth Connected & Disconnected Hardware Cards ──────────────────── */
+.ble-connected-card,
+.ble-disconnected-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  padding: var(--sp-16);
+  background: rgba(255, 255, 255, 0.03);
+  border: none !important;
+  border-radius: var(--radius-16);
+  box-shadow: none !important;
+  margin: var(--sp-8) 0;
+  animation: fadeIn var(--dur-norm) var(--ease-out);
+}
+
+.ble-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ble-device-info-main {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+.ble-device-icon-large {
+  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.03);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ble-device-text-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.ble-device-name-bold {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.ble-device-status-connected {
+  font-size: 0.65rem;
+  color: var(--color-success);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ble-device-status-disconnected {
+  font-size: 0.65rem;
+  color: var(--color-danger);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ble-battery-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.battery-voltage {
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+.battery-label {
+  font-size: 0.58rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ble-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-8) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ble-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.ble-detail-lbl {
+  color: var(--color-text-secondary);
+}
+
+.ble-detail-val {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.ble-detail-val.val-green {
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.ble-card-actions {
+  margin-top: var(--sp-4);
+}
+
+/* ── Direct Hardware Connection Card (ESP32 T6703 & SHT35) ── */
+.settings-group-icon-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-8);
+  background: rgba(20, 184, 166, 0.14);
+  border: none !important;
+  color: #14b8a6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#hardware-connection-group {
+  border: none !important;
+  background: var(--color-card-bg);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.connection-status-pill {
+  font-size: 0.72rem;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.connection-status-pill .status-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.connection-status-pill.connected {
+  background: rgba(20, 184, 166, 0.14);
+  color: #14b8a6;
+  border: none !important;
+}
+
+.connection-status-pill.connected .status-pulse-dot {
+  background: #14b8a6;
+  box-shadow: 0 0 8px #14b8a6;
+}
+
+.connection-status-pill.disconnected {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.5);
+  border: none !important;
+}
+
+.connection-status-pill.disconnected .status-pulse-dot {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.settings-group-subtitle {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.48);
+  margin-top: -6px;
+  margin-bottom: var(--sp-12);
+  line-height: 1.45;
+}
+
+.hw-direct-connect-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-14);
+  padding: 0;
+  background: transparent;
+  border: none !important;
+  border-radius: 0;
+  box-shadow: none !important;
+  transition: all var(--dur-norm) var(--ease-out);
+}
+
+/* ── Luxury Bluetooth Scan CTA Button (Frameless & Unboxed) ── */
+.btn-ble-scan-direct {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.035);
+  border: none !important;
+  border-radius: var(--radius-14);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--dur-fast) var(--ease-out);
+  box-shadow: none !important;
+}
+
+.btn-ble-scan-direct:hover {
+  background: rgba(20, 184, 166, 0.08);
+  border: none !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-ble-scan-direct:active {
+  transform: translateY(0);
+}
+
+/* Luxury Bluetooth Badge */
+.ble-logo-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-12);
+  background: rgba(20, 184, 166, 0.14);
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: none !important;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.btn-ble-scan-direct:hover .ble-logo-badge {
+  background: rgba(20, 184, 166, 0.22);
+  transform: scale(1.04);
+}
+
+.ble-bluetooth-svg {
+  display: block;
+}
+
+#hardware-connection-group .settings-group-title {
+  letter-spacing: 1.2px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+#hardware-connection-group .settings-group-subtitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-ble-scan-direct .btn-text-block {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.btn-ble-scan-direct .btn-title {
+  font-size: 0.90rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-ble-scan-direct .btn-subtitle {
+  font-size: 0.74rem;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-ble-action-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: rgba(20, 184, 166, 0.14);
+  border: none !important;
+  color: #14b8a6;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.btn-ble-scan-direct:hover .btn-ble-action-tag {
+  background: #14b8a6;
+  border: none !important;
+  color: #ffffff;
+}
+
+.btn-ble-action-arrow {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.btn-ble-scan-direct:hover .btn-ble-action-arrow {
+  transform: translateX(2px);
+}
+
+/* ── Divider ── */
+.hw-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 4px 0;
+  gap: 12px;
+}
+
+.hw-divider::before,
+.hw-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+}
+
+.hw-divider span {
+  padding: 0 4px;
+  font-size: 0.64rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+/* ── Wi-Fi Row ── */
+.wifi-input-row {
+  display: flex;
+  gap: var(--sp-8);
+  width: 100%;
+}
+
+.wifi-ip-wrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.wifi-ip-icon {
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
+.wifi-ip-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px 0 38px !important;
+  background: rgba(0, 0, 0, 0.22);
+  border: none !important;
+  border-radius: var(--radius-12);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  outline: none;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+
+.wifi-ip-input:focus {
+  background: rgba(20, 184, 166, 0.08);
+  border: none !important;
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.35);
+}
+
+.btn-wifi-connect-direct {
+  height: 42px;
+  padding: 0 16px;
+  background: rgba(20, 184, 166, 0.14);
+  border: none !important;
+  border-radius: var(--radius-12);
+  color: #14b8a6;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.btn-wifi-connect-direct:hover {
+  background: #14b8a6;
+  border: none !important;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.3);
+}
+
+/* ── Demo Section ── */
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  padding-top: var(--sp-10);
+  border-top: 1px dashed rgba(255, 255, 255, 0.06);
+}
+
+.demo-section-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
+}
+
+.demo-btn-group {
+  display: flex;
+  gap: var(--sp-8);
+  flex-wrap: wrap;
+}
+
+.btn-demo-pill {
+  flex: 1;
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: none !important;
+  border-radius: var(--radius-12);
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.btn-demo-pill:hover {
+  background: rgba(20, 184, 166, 0.08);
+  border: none !important;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-demo-pill .demo-pill-icon {
+  color: #14b8a6;
+  flex-shrink: 0;
+}
+
+/* Pulse highlight animation for navigation from header */
+@keyframes hw-pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 25px 5px rgba(20, 184, 166, 0.4);
+  }
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+}
+
+.pulse-highlight {
+  animation: hw-pulse-glow 1.8s ease-out;
+}
+
+/* ── Mobile Responsive Optimizations (< 600px) ── */
+@media (max-width: 600px) {
+  .btn-ble-scan-direct {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .ble-logo-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-10);
+  }
+
+  .ble-logo-badge svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .btn-ble-scan-direct .btn-title {
+    font-size: 0.82rem;
+  }
+
+  .btn-ble-scan-direct .btn-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .btn-ble-action-tag {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+  }
+
+  .wifi-ip-input {
+    font-size: 0.78rem;
+    height: 40px;
+    padding: 0 10px 0 36px !important;
+  }
+
+  .btn-wifi-connect-direct {
+    height: 40px;
+    padding: 0 12px;
+    font-size: 0.75rem;
+  }
+
+  .demo-btn-group {
+    flex-direction: column;
+  }
+
+  .btn-demo-pill {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+/* ── Day Mode (Light Theme) Overrides for Settings ───────── */
+[data-theme="light"] .settings-group-subtitle {
+  color: #64748b;
+}
+
+[data-theme="light"] .setting-desc-text {
+  color: #64748b;
+}
+
+[data-theme="light"] .setting-icon-wrapper {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #475569 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+[data-theme="light"] #hardware-connection-group {
+  border-color: rgba(2, 132, 199, 0.25);
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="light"] #hardware-connection-group {
+  border: none !important;
+  background: #ffffff !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+[data-theme="light"] .settings-group-icon-badge {
+  background: rgba(13, 148, 136, 0.1) !important;
+  color: #0d9488 !important;
+  border: none !important;
+}
+
+[data-theme="light"] .hw-direct-connect-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+[data-theme="light"] .btn-ble-scan-direct {
+  background: rgba(13, 148, 136, 0.05) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .btn-ble-scan-direct:hover {
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-theme="light"] .ble-logo-badge {
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .ble-bluetooth-svg path {
+  stroke: #0d9488 !important;
+  filter: none;
+}
+
+[data-theme="light"] .btn-ble-scan-direct .btn-title {
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .btn-ble-scan-direct .btn-subtitle {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .btn-ble-action-tag {
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: none !important;
+  color: #0d9488 !important;
+}
+
+[data-theme="light"] .btn-ble-scan-direct:hover .btn-ble-action-tag {
+  background: #0d9488 !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .connection-status-pill.connected {
+  background: rgba(13, 148, 136, 0.1) !important;
+  color: #0d9488 !important;
+  border: none !important;
+}
+
+[data-theme="light"] .connection-status-pill.disconnected {
+  background: rgba(15, 23, 42, 0.05) !important;
+  color: #64748b !important;
+  border: none !important;
+}
+
+[data-theme="light"] .hw-divider::before,
+[data-theme="light"] .hw-divider::after {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.08), transparent);
+}
+
+[data-theme="light"] .hw-divider span {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .wifi-ip-icon {
+  color: #64748b;
+}
+
+[data-theme="light"] .wifi-ip-input {
+  background: rgba(15, 23, 42, 0.04) !important;
+  border: none !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .wifi-ip-input:focus {
+  background: rgba(13, 148, 136, 0.06) !important;
+  border: none !important;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25) !important;
+}
+
+[data-theme="light"] .btn-wifi-connect-direct {
+  background: rgba(13, 148, 136, 0.1) !important;
+  border: none !important;
+  color: #0d9488 !important;
+}
+
+[data-theme="light"] .btn-wifi-connect-direct:hover {
+  background: #0d9488 !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25) !important;
+}
+
+[data-theme="light"] .demo-section {
+  border-top-color: rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .demo-section-label {
+  color: #64748b;
+}
+
+[data-theme="light"] .btn-demo-pill {
+  background: rgba(15, 23, 42, 0.04) !important;
+  border: none !important;
+  color: #475569 !important;
+}
+
+[data-theme="light"] .btn-demo-pill:hover {
+  background: rgba(13, 148, 136, 0.08) !important;
+  color: #0f172a !important;
+  border: none !important;
+}
+
+[data-theme="light"] .btn-demo-pill .demo-pill-icon {
+  color: #0d9488 !important;
+}
+
+[data-theme="light"] .ble-card-details {
+  border-top-color: rgba(0, 0, 0, 0.08);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .ble-device-icon-large {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #475569;
+}
+
+[data-theme="light"] .ble-device-name-bold {
+  color: #0f172a;
+}
+
+[data-theme="light"] .setting-select option,
+[data-theme="light"] select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+[data-theme="light"] .toggle-group {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .toggle-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .settings-footer {
+  color: #94a3b8;
+}
+
+[data-theme="light"] .room-item {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .room-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .setting-control input[type="text"].setting-input {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}

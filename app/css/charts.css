@@ -1,0 +1,245 @@
+/* ==========================================================
+   CHARTS.CSS — Charts / Analytics Screen
+   CO2 / Temperature / Humidity Monitor
+   ========================================================== */
+
+/* ── Screen padding ───────────────────────────────────────── */
+#screen-charts {
+  padding-top: var(--sp-4);
+}
+
+/* ── Time Range Tabs ──────────────────────────────────────── */
+.time-tabs {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sp-4);
+  margin: var(--sp-16);
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-16);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.time-tab {
+  flex: 1;
+  padding: var(--sp-8);
+  text-align: center;
+  border-radius: var(--radius-12);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out),
+              color var(--dur-fast),
+              font-weight var(--dur-fast);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.time-tab:active {
+  transform: scale(0.97);
+}
+
+.time-tab.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .time-tabs {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="light"] .time-tab.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.live-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  margin-right: 5px;
+  vertical-align: middle;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+  animation: liveDotBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes liveDotBlink {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 6px 1px rgba(16, 185, 129, 0.7); }
+  50% { opacity: 0.35; transform: scale(0.85); box-shadow: 0 0 1px rgba(16, 185, 129, 0.2); }
+}
+
+/* ── Chart Metric Toggles ─────────────────────────────────── */
+.chart-toggles {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sp-8);
+  margin: 0 var(--sp-16);
+  flex-wrap: wrap;
+}
+
+.chart-toggle {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid;
+  opacity: 0.6;
+  transition: opacity var(--dur-fast),
+              background var(--dur-fast),
+              transform var(--dur-fast);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.chart-toggle:active {
+  transform: scale(0.95);
+}
+
+.chart-toggle[data-metric="co2"] {
+  border-color: var(--color-co2);
+  color: var(--color-co2);
+}
+
+.chart-toggle[data-metric="co2"].active {
+  background: rgba(16, 185, 129, 0.15);
+  opacity: 1;
+}
+
+.chart-toggle[data-metric="temp"] {
+  border-color: var(--color-temp);
+  color: var(--color-temp);
+}
+
+.chart-toggle[data-metric="temp"].active {
+  background: rgba(245, 158, 11, 0.15);
+  opacity: 1;
+}
+
+.chart-toggle[data-metric="humidity"] {
+  border-color: var(--color-humidity);
+  color: var(--color-humidity);
+}
+
+.chart-toggle[data-metric="humidity"].active {
+  background: rgba(56, 189, 248, 0.15);
+  opacity: 1;
+}
+
+/* ── Chart Wrapper ────────────────────────────────────────── */
+.chart-wrapper,
+.chart-container {
+  margin: var(--sp-16);
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-22);
+  padding: var(--sp-16);
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.chart-wrapper canvas,
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.chart-wrapper.sliding-left canvas,
+.chart-container.sliding-left canvas {
+  transform: translateX(-14px);
+}
+
+/* ── Stat Summary Cards ───────────────────────────────────── */
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-8);
+  margin: var(--sp-16);
+}
+
+.stat-card {
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-18);
+  padding: var(--sp-14) var(--sp-10);
+  text-align: center;
+  transition: transform var(--dur-fast) var(--ease-out);
+  box-shadow: var(--shadow-card);
+}
+
+.stat-card:active {
+  transform: scale(0.97);
+}
+
+.stat-card .stat-value {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: var(--sp-4);
+}
+
+.stat-card .stat-label {
+  color: var(--color-text-secondary);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.stat-card .stat-range {
+  color: var(--color-text-secondary);
+  font-size: 0.6rem;
+  margin-top: 2px;
+}
+
+/* Color-coded stat values */
+.stat-card[data-metric="co2"] .stat-value {
+  color: var(--color-co2);
+}
+
+.stat-card[data-metric="temp"] .stat-value {
+  color: var(--color-temp);
+}
+
+.stat-card[data-metric="humidity"] .stat-value {
+  color: var(--color-humidity);
+}
+
+/* ── Chart Legend ─────────────────────────────────────────── */
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-16);
+  padding: var(--sp-8) var(--sp-16);
+}
+
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+.chart-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}

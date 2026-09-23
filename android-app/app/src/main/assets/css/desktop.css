@@ -1,0 +1,530 @@
+/* ==========================================================
+   DESKTOP.CSS — Dedicated Landscape & Widescreen Cockpit Layout
+   Ngôn ngữ thiết kế Apple-Style Luxury cho Màn hình Máy tính & Xe Ô tô
+   ========================================================== */
+
+/* ── Chế độ Widescreen Desktop / Màn hình ngang Buồng Lái Xe (>= 800px hoặc landscape) ── */
+@media screen and (min-width: 800px), screen and (orientation: landscape) and (min-height: 440px) {
+
+  /* 1. Mở rộng khung Phone-frame thành Màn hình Cockpit Widescreen Tự động Fit */
+  body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--color-bg-start);
+    transition: background var(--dur-norm) var(--ease-out);
+  }
+
+  .phone-frame {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    display: flex;
+    flex-direction: column;
+    background: transparent !important;
+  }
+
+  /* Đốm màu Siri Ambient Blobs trôi nổi toàn màn hình */
+  .phone-bg-blobs {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .phone-bg-blob-1 {
+    width: 650px;
+    height: 650px;
+    filter: blur(140px);
+    opacity: var(--color-blob-opacity);
+  }
+
+  .phone-bg-blob-2 {
+    width: 750px;
+    height: 750px;
+    filter: blur(160px);
+    opacity: var(--color-blob-opacity);
+  }
+
+  /* 2. Thanh Header sang trọng trải dài toàn màn hình */
+  .header {
+    padding: 14px 32px;
+    height: 70px;
+    background: var(--color-header-bg);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 100;
+    transition: background var(--dur-norm) var(--ease-out), border-color var(--dur-norm) var(--ease-out);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+  }
+
+  .header-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+
+  .vehicle-title {
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: var(--radius-12);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  .connection-status {
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--dur-fast);
+  }
+
+  .connection-status:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 210, 255, 0.4);
+  }
+
+  /* 3. Vùng hiển thị màn hình chính (Screens) */
+  .screen {
+    flex: 1;
+    height: calc(100vh - 70px) !important;
+    overflow-y: auto;
+    padding: 20px 40px 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* 4. DASHBOARD: BỐ CỤC BUỒNG LÁI NẰM NGANG (LANDSCAPE COCKPIT GRID) */
+  .dashboard-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+    gap: 16px;
+  }
+
+  .status-overview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 4px;
+  }
+
+  .status-badge {
+    padding: 6px 18px;
+    font-size: 0.85rem;
+  }
+
+  .gauges-container {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 24px;
+    flex: 1;
+    margin: 0;
+    align-items: stretch;
+  }
+
+  /* Cột Trái: Mặt đồng hồ chính Luxury lớn */
+  .gauge-card.main-gauge {
+    margin: 0;
+    padding: 28px 24px;
+    height: 100%;
+    min-height: 420px;
+    border-radius: var(--radius-24);
+    background: linear-gradient(160deg, #171d2c 0%, #111521 100%);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.65), 0 4px 14px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .gauge-card.main-gauge .gauge-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .gauge-card.main-gauge .gauge-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .gauge-card.main-gauge .gauge-svg-container {
+    width: 260px;
+    height: 260px;
+    margin: 10px auto;
+  }
+
+  .gauge-card.main-gauge .gauge-svg {
+    width: 260px;
+    height: 260px;
+  }
+
+  .gauge-card.main-gauge .gauge-desc {
+    font-size: 0.95rem;
+    max-width: 440px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .gauge-card.main-gauge .gauge-sparkline {
+    height: 48px;
+    margin-top: 16px;
+  }
+
+  /* Cột Phải: Các thẻ chỉ số phụ + Thẻ Trợ lý Sức khỏe Buồng lái */
+  .dashboard-side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+  }
+
+  .preview-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .preview-card {
+    height: 98px;
+    padding: 16px 20px;
+    border-radius: var(--radius-20);
+    background: linear-gradient(160deg, #171d2c 0%, #111521 100%);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.55), 0 3px 10px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .preview-card-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    border-radius: var(--radius-16);
+  }
+
+  .preview-card-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  .preview-card-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Thẻ Trợ Lý Sức Khỏe Buồng Lái Apple Health Style trên Desktop */
+  .desktop-assistant-card {
+    flex: 1;
+    background: linear-gradient(160deg, #171d2c 0%, #111521 100%);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: var(--radius-24);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 18px 44px -10px rgba(0, 0, 0, 0.6), 0 4px 14px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .assistant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .assistant-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .assistant-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #00f5a0;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    background: rgba(0, 245, 160, 0.1);
+    border: 1px solid rgba(0, 245, 160, 0.25);
+  }
+
+  .assistant-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00f5a0;
+    box-shadow: 0 0 6px #00f5a0;
+    animation: liveBeacon 1.8s ease-in-out infinite;
+  }
+
+  @keyframes liveBeacon {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(0.75);
+    }
+  }
+
+  .assistant-items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .assistant-tip-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.045);
+    border-radius: var(--radius-16);
+    transition: all var(--dur-fast);
+  }
+
+  .assistant-tip-item.warn-active {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.03) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    box-shadow: 0 4px 18px -2px rgba(245, 158, 11, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .assistant-tip-item.danger-active {
+    background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.03) 100%);
+    border: 1px solid rgba(244, 63, 94, 0.22);
+    box-shadow: 0 4px 18px -2px rgba(244, 63, 94, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .tip-item-icon {
+    font-size: 1.25rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tip-item-content h4 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #fff;
+  }
+
+  .tip-item-content p {
+    font-size: 0.72rem;
+    color: var(--color-text-secondary);
+    line-height: 1.35;
+  }
+
+  /* 5. CHARTS: ĐỒ THỊ RỘNG CHUẨN MÀN HÌNH MÁY TÍNH */
+  .charts-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .chart-wrapper {
+    height: 420px !important;
+    padding: 24px;
+    border-radius: var(--radius-24);
+    background: linear-gradient(160deg, #171d2c 0%, #111521 100%);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    box-shadow: 0 18px 44px -10px rgba(0, 0, 0, 0.6), 0 4px 14px -2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .stat-card {
+    padding: 20px;
+    border-radius: var(--radius-20);
+    background: linear-gradient(160deg, #171d2c 0%, #111521 100%);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.55), 0 3px 10px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .stat-value {
+    font-size: 1.85rem;
+  }
+
+  /* 6. SETTINGS & ALERTS & REPORTS TRÊN MÀN HÌNH RỘNG */
+  .settings-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .alerts-content,
+  .reports-content {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* 7. Ẩn thanh bottom-nav vì đã dùng Menu ngang trên header */
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .corner-menu-popover {
+    top: 76px;
+    left: 40px;
+    width: 210px;
+  }
+
+  /* 8. Chế độ Ban Ngày (Day Mode) trên màn hình Widescreen */
+  [data-theme="light"] .gauge-card.main-gauge {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 18px 42px -10px rgba(15, 23, 42, 0.06), 0 2px 8px -1px rgba(15, 23, 42, 0.02), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  [data-theme="light"] .preview-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  [data-theme="light"] .desktop-assistant-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 16px 40px -10px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+
+  [data-theme="light"] .assistant-tip-item {
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.05);
+  }
+
+  [data-theme="light"] .assistant-tip-item.warn-active {
+    background: #fffbeb;
+    border-color: rgba(245, 158, 11, 0.3);
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.1);
+  }
+
+  [data-theme="light"] .assistant-tip-item.danger-active {
+    background: #fff1f2;
+    border-color: rgba(244, 63, 94, 0.3);
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.1);
+  }
+
+  [data-theme="light"] .tip-item-icon {
+    background: #f1f5f9;
+  }
+
+  [data-theme="light"] .tip-item-content h4 {
+    color: #0f172a;
+  }
+
+  [data-theme="light"] .chart-wrapper,
+  [data-theme="light"] .stat-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 14px 34px -8px rgba(15, 23, 42, 0.05);
+  }
+
+  /* 9. Thông báo (Toast Notification): Định vị phía dưới bên trái (Bottom-Left) trên màn hình ngang Desktop */
+  .toast-container {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 28px !important;
+    left: 32px !important;
+    right: auto !important;
+    align-items: flex-start !important;
+    padding: 0 !important;
+    z-index: 9999 !important;
+    max-width: 480px !important;
+    pointer-events: none !important;
+    gap: 12px !important;
+  }
+
+  .toast {
+    transform: translateY(24px) scale(0.96);
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.45), 0 0 1px rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-16);
+    padding: 12px 18px;
+    max-width: 460px;
+    width: auto;
+  }
+
+  .toast.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .toast-message {
+    white-space: normal;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    word-break: break-word;
+  }
+
+  [data-theme="light"] .toast {
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14), 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+}

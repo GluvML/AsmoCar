@@ -1,0 +1,374 @@
+/* ==========================================================
+   SPLASH.CSS — MoMo-Inspired Luxury App Launch Screen
+   CO2 / Temperature / Humidity Smart Car Monitor
+   ========================================================== */
+
+.splash-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--sp-48) + env(safe-area-inset-top, 0px)) var(--sp-24) calc(var(--sp-32) + env(safe-area-inset-bottom, 0px));
+  background: radial-gradient(circle at 50% 30%, #111827 0%, #080b11 70%, #040608 100%);
+  overflow: hidden;
+  user-select: none;
+  pointer-events: auto;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+[data-theme="light"] .splash-screen {
+  background: radial-gradient(circle at 50% 25%, #ecfdf5 0%, #f0fdf4 40%, #ffffff 85%, #f8fafc 100%);
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+/* ── Concentric Ambient Wave Patterns (Như màn hình MoMo) ── */
+.splash-waves {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -10%);
+  width: 580px;
+  height: 580px;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+[data-theme="light"] .splash-waves {
+  opacity: 0.55;
+}
+
+.splash-wave-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="light"] .splash-wave-circle {
+  border-color: rgba(5, 150, 105, 0.16);
+}
+
+.splash-wave-1 { width: 220px; height: 220px; animation: splashPulse 4s ease-in-out infinite; }
+.splash-wave-2 { width: 310px; height: 310px; animation: splashPulse 4s ease-in-out infinite 0.6s; }
+.splash-wave-3 { width: 400px; height: 400px; animation: splashPulse 4s ease-in-out infinite 1.2s; }
+.splash-wave-4 { width: 490px; height: 490px; animation: splashPulse 4s ease-in-out infinite 1.8s; }
+.splash-wave-5 { width: 580px; height: 580px; animation: splashPulse 4s ease-in-out infinite 2.4s; }
+
+@keyframes splashPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.25; }
+  50% { transform: translate(-50%, -50%) scale(1.04); opacity: 0.6; }
+}
+
+/* ── Center Content Hero ─────────────────────────────────── */
+.splash-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  max-width: 340px;
+  animation: splashHeroIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes splashHeroIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.88) translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Shield Hero Badge & Sparkle ─────────────────────────── */
+.splash-badge-wrap {
+  position: relative;
+  width: 110px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--sp-24);
+}
+
+.splash-badge-glow {
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.45) 0%, rgba(56, 189, 248, 0.15) 50%, transparent 70%);
+  filter: blur(20px);
+  border-radius: 50%;
+  animation: splashGlowBreath 3s ease-in-out infinite;
+}
+
+[data-theme="light"] .splash-badge-glow {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(2, 132, 199, 0.12) 50%, transparent 70%);
+}
+
+@keyframes splashGlowBreath {
+  0%, 100% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
+.splash-shield {
+  position: relative;
+  width: 100px;
+  height: 110px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 45%, #047857 100%);
+  clip-path: path('M50 0 C75 0 98 12 100 35 C102 72 75 98 50 110 C25 98 -2 72 0 35 C2 12 25 0 50 0 Z');
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 36px -6px rgba(16, 185, 129, 0.5),
+              inset 0 2px 4px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="light"] .splash-shield {
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+  box-shadow: 0 14px 32px -4px rgba(5, 150, 105, 0.4),
+              inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.splash-shield svg {
+  width: 50px;
+  height: 50px;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.25));
+}
+
+/* Star Glint / Sparkle (Giống ngôi sao lấp lánh trên khiên MoMo) */
+.splash-sparkle {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  width: 32px;
+  height: 32px;
+  color: #34d399;
+  filter: drop-shadow(0 0 10px #34d399) drop-shadow(0 0 16px rgba(255, 255, 255, 0.9));
+  animation: sparkleTwinkle 2.4s ease-in-out infinite;
+  z-index: 3;
+}
+
+[data-theme="light"] .splash-sparkle {
+  color: #059669;
+  filter: drop-shadow(0 0 8px rgba(5, 150, 105, 0.7));
+}
+
+@keyframes sparkleTwinkle {
+  0%, 100% {
+    transform: scale(0.7) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.18) rotate(90deg);
+    opacity: 1;
+  }
+}
+
+/* ── Typography Section (Phong cách MoMo) ────────────────── */
+.splash-tagline {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-bottom: var(--sp-8);
+  background: linear-gradient(135deg, #10b981 0%, #34d399 40%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .splash-tagline {
+  background: linear-gradient(135deg, #059669 0%, #10b981 50%, #0284c7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.splash-description {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  line-height: 1.45;
+  max-width: 290px;
+  margin-bottom: var(--sp-24);
+  letter-spacing: -0.01em;
+}
+
+[data-theme="light"] .splash-description {
+  color: #0f172a;
+}
+
+/* ── Trust / Hardware Badges (Giống hàng logo ngân hàng MoMo) ── */
+.splash-badges-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.splash-tech-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+[data-theme="light"] .splash-tech-badge {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.splash-tech-badge svg {
+  width: 20px;
+  height: 20px;
+}
+
+.splash-tech-badge.extra {
+  width: auto;
+  min-width: 44px;
+  padding: 0 10px;
+  border-radius: 22px;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+}
+
+[data-theme="light"] .splash-tech-badge.extra {
+  color: #475569;
+}
+
+.splash-tech-badge.extra span:first-child {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-co2);
+}
+
+/* ── Bottom Brand & Micro Loader ─────────────────────────── */
+.splash-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-12);
+  width: 100%;
+}
+
+.splash-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.splash-brand-logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+[data-theme="light"] .splash-brand-logo {
+  color: #0f172a;
+}
+
+.splash-brand-logo span {
+  color: #10b981;
+}
+
+.splash-brand-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+[data-theme="light"] .splash-brand-divider {
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.splash-brand-sub {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #94a3b8;
+  line-height: 1.25;
+}
+
+[data-theme="light"] .splash-brand-sub {
+  color: #64748b;
+}
+
+.splash-brand-sub em {
+  font-style: normal;
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* Micro Linear Loading Bar */
+.splash-loader-bar {
+  width: 120px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme="light"] .splash-loader-bar {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.splash-loader-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #38bdf8);
+  border-radius: 9999px;
+  animation: splashLoadFill 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes splashLoadFill {
+  0% { width: 0%; }
+  40% { width: 55%; }
+  75% { width: 85%; }
+  100% { width: 100%; }
+}

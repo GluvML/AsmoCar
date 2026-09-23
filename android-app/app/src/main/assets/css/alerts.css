@@ -1,0 +1,233 @@
+/* ==========================================================
+   ALERTS.CSS — Alerts & Notifications Screen
+   CO2 / Temperature / Humidity Monitor
+   ========================================================== */
+
+/* ── Screen padding ───────────────────────────────────────── */
+#screen-alerts {
+  padding-top: var(--sp-4);
+}
+
+/* ── Alerts Header ────────────────────────────────────────── */
+.alerts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-16);
+}
+
+.alerts-header .alerts-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.alerts-header .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 0 10px rgba(255, 71, 87, 0.35);
+}
+
+.alerts-header .clear-btn {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--sp-4) var(--sp-8);
+  border-radius: var(--radius-8);
+  transition: color var(--dur-fast),
+              background var(--dur-fast);
+}
+
+.alerts-header .clear-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Alerts Filter Tabs ───────────────────────────────────── */
+.alerts-filter {
+  display: flex;
+  gap: var(--sp-8);
+  padding: 0 var(--sp-16) var(--sp-8);
+}
+
+.alerts-filter .filter-tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: background var(--dur-fast),
+              color var(--dur-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.alerts-filter .filter-tab.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
+}
+
+/* ── Alerts List ──────────────────────────────────────────── */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Stagger entrance */
+.alerts-list .alert-item:nth-child(1) { animation: slideUp var(--dur-norm) var(--ease-out) 0.03s both; }
+.alerts-list .alert-item:nth-child(2) { animation: slideUp var(--dur-norm) var(--ease-out) 0.08s both; }
+.alerts-list .alert-item:nth-child(3) { animation: slideUp var(--dur-norm) var(--ease-out) 0.13s both; }
+.alerts-list .alert-item:nth-child(4) { animation: slideUp var(--dur-norm) var(--ease-out) 0.18s both; }
+.alerts-list .alert-item:nth-child(5) { animation: slideUp var(--dur-norm) var(--ease-out) 0.23s both; }
+.alerts-list .alert-item:nth-child(n+6) { animation: slideUp var(--dur-norm) var(--ease-out) 0.28s both; }
+
+/* ── Alert Item Internal Layout ───────────────────────────── */
+.alert-item .alert-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.alert-item.warning .alert-icon {
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.alert-item.danger .alert-icon {
+  background: rgba(244, 63, 94, 0.12);
+}
+
+/* Icon wrapper used by JS */
+.alert-icon-wrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-icon-warning,
+.alert-item.warning .alert-icon-wrapper {
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.alert-icon-danger,
+.alert-item.danger .alert-icon-wrapper {
+  background: rgba(244, 63, 94, 0.12);
+}
+
+.alert-icon-wrapper .alert-icon {
+  width: auto;
+  height: auto;
+  background: none;
+  font-size: 1.1rem;
+}
+
+/* Dismiss button on alert items */
+.alert-dismiss {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: var(--sp-4);
+  border-radius: var(--radius-8);
+  transition: color var(--dur-fast), background var(--dur-fast);
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.alert-dismiss:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.alert-item .alert-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.alert-item .alert-title {
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.alert-item .alert-desc {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.alert-item .alert-time {
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+/* Unread indicator dot */
+.alert-item.unread .alert-title::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-co2);
+  margin-right: var(--sp-8);
+  vertical-align: middle;
+  box-shadow: 0 0 6px rgba(255, 107, 107, 0.5);
+}
+
+/* ── Empty State ──────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px var(--sp-20);
+  text-align: center;
+}
+
+.empty-state .empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--sp-16);
+  opacity: 0.4;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.empty-state .empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: var(--sp-8);
+}
+
+.empty-state .empty-desc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  max-width: 240px;
+  line-height: 1.5;
+}

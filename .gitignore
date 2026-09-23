@@ -1,0 +1,21 @@
+# Node & Edge Test Profiles
+node_modules/
+.edge_*
+*.log
+
+# Build files
+flutter_mobile_app/build/
+flutter_mobile_app/.dart_tool/
+flutter_mobile_app/ios/Pods/
+flutter_mobile_app/ios/.symlinks/
+flutter_mobile_app/ios/Flutter/Flutter.framework
+flutter_mobile_app/ios/Flutter/Flutter.podspec
+flutter_mobile_app/Payload/
+flutter_mobile_app/*.ipa
+android-app/build/
+android-app/app/build/
+.gradle/
+
+# OS files
+.DS_Store
+Thumbs.db

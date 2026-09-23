@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>AtmoCar - Giám Sát CO₂ Ô Tô</title>
+    <meta name="description" content="Ứng dụng giám sát nồng độ CO₂, nhiệt độ và độ ẩm trong xe ô tô">
+    <meta name="theme-color" content="#0a0a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+
+    <script>
+        // Xóa sạch service worker và cache cũ nếu có
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                for (let r of regs) r.unregister();
+            });
+        }
+        if (window.caches) {
+            caches.keys().then(keys => {
+                for (let k of keys) caches.delete(k);
+            });
+        }
+    </script>
+
+    <!-- Google Fonts (Plus Jakarta Sans, Inter, Be Vietnam Pro & Outfit - Tuyển chọn typography công thái học cao cấp) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <!-- Adapter for time scale -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <!-- Streaming plugin for live telemetry oscilloscope smooth leftward scroll -->
+    <script src="js/chartjs-plugin-streaming.min.js"></script>
+
+    <!-- CSS files -->
+    <link rel="stylesheet" href="css/splash.css?v=3.5">
+    <link rel="stylesheet" href="css/index.css?v=3.5">
+    <link rel="stylesheet" href="css/components.css?v=3.5">
+    <link rel="stylesheet" href="css/dashboard.css?v=3.5">
+    <link rel="stylesheet" href="css/charts.css?v=3.5">
+    <link rel="stylesheet" href="css/alerts.css?v=3.5">
+    <link rel="stylesheet" href="css/settings.css?v=3.5">
+    <link rel="stylesheet" href="css/reports.css?v=3.5">
+    <link rel="stylesheet" href="css/desktop.css?v=3.5">
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- Minimalist App Launch Splash Screen -->
+        <div id="splash-screen" class="splash-screen">
+            <!-- Subtle Zen Ambient Wave Circles -->
+            <div class="splash-waves">
+                <div class="splash-wave-circle splash-wave-1"></div>
+                <div class="splash-wave-circle splash-wave-2"></div>
+                <div class="splash-wave-circle splash-wave-3"></div>
+            </div>
+
+            <!-- Center Minimal Hero -->
+            <div class="splash-center">
+                <!-- App Icon Badge with Glowing Aura -->
+                <div class="splash-logo-wrap">
+                    <div class="splash-logo-glow"></div>
+                    <div class="splash-logo-badge">
+                        <svg class="splash-logo-svg" viewBox="0 0 36 36" width="78" height="78" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="spl-car-grad" x1="4" y1="12" x2="32" y2="24" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.98"/>
+                                    <stop offset="60%" stop-color="#f1f5f9" stop-opacity="0.9"/>
+                                    <stop offset="100%" stop-color="#14b8a6"/>
+                                </linearGradient>
+                                <linearGradient id="spl-air-grad" x1="4" y1="26" x2="32" y2="10" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#14b8a6"/>
+                                    <stop offset="50%" stop-color="#0ea5e9"/>
+                                    <stop offset="100%" stop-color="#14b8a6"/>
+                                </linearGradient>
+                                <radialGradient id="spl-beacon-glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.95"/>
+                                    <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+                                </radialGradient>
+                                <filter id="spl-drop-glow" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+                                    <feMerge>
+                                        <feMergeNode in="blur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <!-- Aerodynamic Car Silhouette Line -->
+                            <path d="M 4 23 C 6.5 22.5 9 20 11 16.5 L 14.5 11.5 C 16.5 9 19.5 8.5 23 9.5 L 27.5 13.5 C 29.5 15.5 31.5 18 32.5 21" 
+                                  stroke="url(#spl-car-grad)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Circulating Fresh Airflow Loop -->
+                            <path d="M 8 23 C 6 25 7 28 10 28 C 14.5 28 17 21 19 14.5 C 20.5 9.5 23 8 25 8 C 28 8 29.5 11 28 15 C 26 20 22 25 16 26.5 C 12 27.5 8.5 26.5 8 23 Z" 
+                                  stroke="url(#spl-air-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#spl-drop-glow)"/>
+                            <!-- Radiant Cyan Droplet Apex (Focal Point) -->
+                            <circle cx="21" cy="6.5" r="3.8" fill="url(#spl-beacon-glow)" />
+                            <circle cx="21" cy="6.5" r="1.8" fill="#0ea5e9" />
+                            <circle cx="21" cy="6.5" r="0.8" fill="#ffffff" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Brand Name & Clean Minimal Tagline -->
+                <h1 class="splash-brand-title">Atmo<span class="splash-car-accent">Car</span></h1>
+                <p class="splash-brand-tagline">Giám sát không khí ô tô thông minh</p>
+            </div>
+
+            <!-- Bottom Minimal Loader -->
+            <div class="splash-bottom">
+                <div class="splash-loader-bar">
+                    <div class="splash-loader-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="phone-bg-glow"></div>
+        <div class="phone-bg-blobs">
+            <div class="phone-bg-blob-1"></div>
+            <div class="phone-bg-blob-2"></div>
+        </div>
+        <!-- Toast notification container -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="header-brand-wrap" title="AtmoCar - ESP32 Smart Air Quality Monitor">
+                    <div class="header-logo-badge">
+                        <svg class="brand-logo-svg" viewBox="0 0 36 36" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="logo-car-grad" x1="4" y1="12" x2="32" y2="24" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                                    <stop offset="60%" stop-color="#ffffff" stop-opacity="0.85"/>
+                                    <stop offset="100%" stop-color="#00f5a0"/>
+                                </linearGradient>
+                                <linearGradient id="logo-air-grad" x1="4" y1="26" x2="32" y2="10" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#00f5a0"/>
+                                    <stop offset="50%" stop-color="#00d2ff"/>
+                                    <stop offset="100%" stop-color="#00f5a0"/>
+                                </linearGradient>
+                                <radialGradient id="logo-beacon-glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#00d2ff" stop-opacity="0.9"/>
+                                    <stop offset="100%" stop-color="#00d2ff" stop-opacity="0"/>
+                                </radialGradient>
+                                <filter id="logo-drop-glow" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+                                    <feMerge>
+                                        <feMergeNode in="blur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            <!-- Aerodynamic Car Silhouette Line -->
+                            <path d="M 4 23 C 6.5 22.5 9 20 11 16.5 L 14.5 11.5 C 16.5 9 19.5 8.5 23 9.5 L 27.5 13.5 C 29.5 15.5 31.5 18 32.5 21" 
+                                  stroke="url(#logo-car-grad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Circulating Fresh Airflow Loop -->
+                            <path d="M 8 23 C 6 25 7 28 10 28 C 14.5 28 17 21 19 14.5 C 20.5 9.5 23 8 25 8 C 28 8 29.5 11 28 15 C 26 20 22 25 16 26.5 C 12 27.5 8.5 26.5 8 23 Z" 
+                                  stroke="url(#logo-air-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#logo-drop-glow)"/>
+                            <!-- Radiant Cyan Droplet Apex (Focal Point) -->
+                            <circle cx="21" cy="6.5" r="3.8" fill="url(#logo-beacon-glow)" />
+                            <circle cx="21" cy="6.5" r="1.8" fill="#00d2ff" />
+                            <circle cx="21" cy="6.5" r="0.8" fill="#ffffff" />
+                        </svg>
+                    </div>
+                    <div class="header-brand-info">
+                        <h1 class="header-title"><span class="brand-atmo">Atmo</span><span class="brand-car">Car</span></h1>
+                    </div>
+                </div>
+                <div class="header-edition-badge" id="vehicle-title" title="AtmoCar Cockpit OS">
+                    <span class="edition-dot"></span>
+                    <span class="edition-text">Cockpit OS</span>
+                </div>
+            </div>
+
+            <!-- Menu ngang căn giữa phong cách Facebook Desktop Tabs -->
+            <nav class="header-nav header-center" id="header-nav">
+                <button class="header-nav-item nav-item active" data-screen="dashboard" title="Tổng quan">
+                    <span class="nav-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Tổng quan</span>
+                    <span class="nav-indicator"></span>
+                </button>
+
+                <button class="header-nav-item nav-item" data-screen="charts" title="Biểu đồ">
+                    <span class="nav-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Biểu đồ</span>
+                    <span class="nav-indicator"></span>
+                </button>
+
+                <button class="header-nav-item nav-item" data-screen="alerts" title="Cảnh báo">
+                    <span class="nav-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Cảnh báo</span>
+                    <span class="nav-badge" id="alerts-badge" style="display:none">0</span>
+                    <span class="nav-indicator"></span>
+                </button>
+
+                <button class="header-nav-item nav-item" data-screen="settings" title="Cài đặt">
+                    <span class="nav-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Cài đặt</span>
+                    <span class="nav-indicator"></span>
+                </button>
+
+                <button class="header-nav-item nav-item" data-screen="reports" title="Báo cáo">
+                    <span class="nav-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </span>
+                    <span class="nav-text">Báo cáo</span>
+                    <span class="nav-indicator"></span>
+                </button>
+            </nav>
+
+            <div class="header-right">
+                <!-- Nút 3-gạch dự phòng (ẩn trên desktop & mobile dock) -->
+                <button class="hamburger-btn" id="menu-toggle-btn" aria-label="Menu buồng lái" title="Nhấn để mở Menu chọn màn hình" style="display:none">
+                    <span class="bar bar-1"></span>
+                    <span class="bar bar-2"></span>
+                    <span class="bar bar-3"></span>
+                    <span class="menu-alert-dot" id="menu-alert-dot" style="display:none"></span>
+                </button>
+                <div class="theme-switch-header" id="theme-switch-header" role="group" aria-label="Chế độ nền sáng / tối">
+                    <button class="theme-pill-btn" data-theme-btn="light" title="Chuyển sang Chế độ Nền Sáng">
+                        <span class="theme-pill-icon">☀️</span>
+                        <span class="theme-pill-label">Sáng</span>
+                    </button>
+                    <button class="theme-pill-btn active" data-theme-btn="dark" title="Chuyển sang Chế độ Nền Tối">
+                        <span class="theme-pill-icon">🌙</span>
+                        <span class="theme-pill-label">Tối</span>
+                    </button>
+                </div>
+                <div class="connection-status online" id="connection-status" title="Nhấn để kết nối Bluetooth / Wi-Fi">
+                    <span class="dot"></span>
+                    <span class="status-text">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Ô Menu Điều Hướng Tinh Gọn (Chỉ Tên & Icon) -->
+        <div class="corner-menu-backdrop" id="corner-menu-backdrop"></div>
+        <div class="corner-menu-popover" id="corner-menu-popover" role="dialog" aria-label="Menu buồng lái" aria-modal="true">
+            <div class="corner-menu-header">
+                <span class="corner-menu-title">🌿 Menu</span>
+                <button class="corner-menu-close" id="corner-menu-close" aria-label="Đóng menu">✕</button>
+            </div>
+
+            <div class="corner-menu-list">
+                <button class="corner-menu-item nav-item active" data-screen="dashboard">
+                    <span class="menu-item-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span class="menu-item-title">Tổng quan</span>
+                    <span class="menu-item-indicator">✓</span>
+                </button>
+
+                <button class="corner-menu-item nav-item" data-screen="charts">
+                    <span class="menu-item-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </span>
+                    <span class="menu-item-title">Biểu đồ</span>
+                    <span class="menu-item-indicator">✓</span>
+                </button>
+
+                <button class="corner-menu-item nav-item" data-screen="alerts">
+                    <span class="menu-item-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                    </span>
+                    <span class="menu-item-title">Cảnh báo</span>
+                    <span class="menu-badge" id="menu-alerts-badge" style="display:none">0</span>
+                    <span class="menu-item-indicator">✓</span>
+                </button>
+
+                <button class="corner-menu-item nav-item" data-screen="settings">
+                    <span class="menu-item-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                    <span class="menu-item-title">Cài đặt</span>
+                    <span class="menu-item-indicator">✓</span>
+                </button>
+
+                <button class="corner-menu-item nav-item" data-screen="reports">
+                    <span class="menu-item-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </span>
+                    <span class="menu-item-title">Báo cáo</span>
+                    <span class="menu-item-indicator">✓</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Screens Viewport Container (Locks bottom-nav in place & clips transitions) -->
+        <main class="screens-viewport" id="screens-viewport">
+            <!-- Screen: Dashboard -->
+            <section class="screen active" id="screen-dashboard">
+            <div class="dashboard-content">
+                <!-- Cockpit Emergency Alert Banner (Slides down dynamically on threshold breach) -->
+                <div class="cockpit-emergency-banner" id="cockpit-emergency-banner" style="display: none;">
+                    <div class="emergency-banner-icon-wrap">
+                        <span class="emergency-beacon-icon">🚨</span>
+                    </div>
+                    <div class="emergency-banner-content">
+                        <div class="emergency-banner-top">
+                            <span class="emergency-badge">NGUY HIỂM</span>
+                            <span class="emergency-title" id="emergency-banner-title">CẢNH BÁO: NỒNG ĐỘ CO₂ VƯỢT NGƯỠNG!</span>
+                            <span class="emergency-val" id="emergency-banner-val">2,450 ppm</span>
+                        </div>
+                        <p class="emergency-desc" id="emergency-banner-desc">Tài xế hãy chuyển ngay sang LẤY GIÓ NGOÀI hoặc HẠ KÍNH XE để tránh buồn ngủ và thiếu oxy!</p>
+                    </div>
+                    <button class="emergency-banner-action" id="emergency-banner-action" type="button" title="Đã hiểu cảnh báo">
+                        <span>ĐÃ HIỂU</span>
+                    </button>
+                </div>
+
+                <div class="gauges-container">
+                    <!-- Main Active Gauge -->
+                    <div class="gauge-card main-gauge" id="main-gauge-card" data-type="co2">
+                        <div class="gauge-header">
+                            <div class="gauge-header-title-wrap">
+                                <span class="gauge-icon" id="main-gauge-icon">💨</span>
+                                <span class="gauge-title" id="main-gauge-title">CO₂</span>
+                            </div>
+                            <div class="metric-carousel-dots" id="metric-carousel-dots" role="tablist" aria-label="Chế độ đo buồng lái">
+                                <button class="metric-dot active" data-metric="co2" title="Chế độ đo CO₂" aria-label="CO2"></button>
+                                <button class="metric-dot" data-metric="temp" title="Chế độ đo Nhiệt độ" aria-label="Nhiệt độ"></button>
+                                <button class="metric-dot" data-metric="humidity" title="Chế độ đo Độ ẩm" aria-label="Độ ẩm"></button>
+                            </div>
+                        </div>
+                        <div class="gauge-body">
+                            <div class="gauge-svg-container" id="main-gauge-svg-container"></div>
+                        </div>
+                        <div class="gauge-desc" id="main-gauge-desc">--</div>
+                        <div class="gauge-sparkline" id="main-gauge-sparkline"></div>
+                    </div>
+
+                    <!-- Side Panel: Previews + Smart Health Assistant + Timestamp -->
+                    <div class="dashboard-side-panel">
+                        <div class="preview-cards-container">
+                            <div class="preview-card" id="preview-card-left" data-type="temp">
+                                <!-- Populated by JS -->
+                            </div>
+                            <div class="preview-card" id="preview-card-right" data-type="humidity">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Smart Driving Assistant Card on Desktop -->
+                        <div class="desktop-assistant-card" id="desktop-assistant-card">
+                            <div class="assistant-header">
+                                <span class="assistant-title">🛡️ Trợ Lý Buồng Lái Thông Minh</span>
+                                <span class="assistant-live-badge"><span class="assistant-live-dot"></span>LIVE</span>
+                            </div>
+                            <div class="assistant-items-grid">
+                                <div class="assistant-tip-item" id="tip-ventilation">
+                                    <span class="tip-item-icon">🔄</span>
+                                    <div class="tip-item-content">
+                                        <h4 id="tip-vent-title">Chế độ gió: Tự động / Lấy gió trong</h4>
+                                        <p id="tip-vent-desc">Nồng độ CO₂ an toàn, không khí trong cabin lưu thông tốt.</p>
+                                    </div>
+                                </div>
+                                <div class="assistant-tip-item" id="tip-humidity">
+                                    <span class="tip-item-icon">❄️</span>
+                                    <div class="tip-item-content">
+                                        <h4 id="tip-hum-title">Điều hòa & Độ ẩm tối ưu</h4>
+                                        <p id="tip-hum-desc">Nhiệt độ và độ ẩm ở dải thoải mái lý tưởng.</p>
+                                    </div>
+                                </div>
+                                <div class="assistant-tip-item" id="tip-thermal">
+                                    <span class="tip-item-icon">🌡️</span>
+                                    <div class="tip-item-content">
+                                        <h4 id="tip-thermal-title">Cân bằng nhiệt & Điểm sương</h4>
+                                        <p id="tip-thermal-desc">Chỉ số nhiệt (Heat Index): --°C • Điểm sương: --°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="last-update" id="last-update">
+                            Cập nhật lúc: --:--:--
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen: Charts -->
+        <section class="screen" id="screen-charts">
+            <div class="charts-content">
+                <div class="time-tabs">
+                    <button class="time-tab active" data-range="realtime"><span class="live-dot"></span>Trực tiếp</button>
+                    <button class="time-tab" data-range="24h">24 giờ</button>
+                    <button class="time-tab" data-range="7d">7 ngày</button>
+                    <button class="time-tab" data-range="30d">30 ngày</button>
+                </div>
+
+                <div class="chart-toggles">
+                    <button class="chart-toggle active" data-metric="co2" style="--toggle-color: #2ecc71">CO₂</button>
+                    <button class="chart-toggle active" data-metric="temp" style="--toggle-color: #f39c12">Nhiệt độ</button>
+                    <button class="chart-toggle active" data-metric="humidity" style="--toggle-color: #3498db">Độ ẩm</button>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="main-chart"></canvas>
+                </div>
+
+                <div class="stat-cards">
+                    <div class="stat-card" data-metric="co2">
+                        <div class="stat-label">CO₂</div>
+                        <div class="stat-value" id="stat-co2-avg">--</div>
+                        <div class="stat-range" id="stat-co2-range">-- ~ --</div>
+                    </div>
+                    <div class="stat-card" data-metric="temp">
+                        <div class="stat-label">Nhiệt độ</div>
+                        <div class="stat-value" id="stat-temp-avg">--</div>
+                        <div class="stat-range" id="stat-temp-range">-- ~ --</div>
+                    </div>
+                    <div class="stat-card" data-metric="humidity">
+                        <div class="stat-label">Độ ẩm</div>
+                        <div class="stat-value" id="stat-humidity-avg">--</div>
+                        <div class="stat-range" id="stat-humidity-range">-- ~ --</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen: Alerts -->
+        <section class="screen" id="screen-alerts">
+            <div class="alerts-content">
+                <div class="alerts-header">
+                    <h2 class="alerts-title">Cảnh báo</h2>
+                    <button class="btn btn-sm" id="clear-all-alerts">Xóa tất cả</button>
+                </div>
+                <div class="alerts-list" id="alerts-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen: Settings -->
+        <section class="screen" id="screen-settings">
+            <div class="settings-content" id="settings-content">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Screen: Reports -->
+        <section class="screen" id="screen-reports">
+            <div class="reports-content" id="reports-content">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-screen="dashboard">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                </svg>
+                <span>Tổng quan</span>
+            </button>
+            <button class="nav-item" data-screen="charts">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span>Biểu đồ</span>
+            </button>
+            <button class="nav-item" data-screen="alerts">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span>Cảnh báo</span>
+                <span class="nav-badge" id="alerts-badge" style="display:none">0</span>
+            </button>
+            <button class="nav-item" data-screen="settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span>Cài đặt</span>
+            </button>
+            <button class="nav-item" data-screen="reports">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Báo cáo</span>
+            </button>
+        </nav>
+
+        <!-- Modal container -->
+        <div class="modal-overlay" id="modal-overlay" style="display:none">
+            <div class="modal" id="modal">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modal-title"></h3>
+                    <button class="modal-close" id="modal-close">✕</button>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+                <div class="modal-footer" id="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS files in dependency order -->
+    <script src="js/splash.js?v=3.5"></script>
+    <script src="js/translations.js?v=3.5"></script>
+    <script src="js/data.js?v=3.5"></script>
+    <script src="js/gauges.js?v=3.5"></script>
+    <script src="js/alerts.js?v=3.5"></script>
+    <script src="js/charts.js?v=3.5"></script>
+    <script src="js/settings.js?v=3.5"></script>
+    <script src="js/reports.js?v=3.5"></script>
+    <script src="js/hardware-bridge.js?v=3.5"></script>
+    <script src="js/app.js?v=3.5"></script>
+</body>
+</html>

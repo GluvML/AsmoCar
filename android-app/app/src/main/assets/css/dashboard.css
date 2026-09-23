@@ -1,0 +1,693 @@
+/* ==========================================================
+   DASHBOARD.CSS — Dashboard Screen (Apple-Style Optimized)
+   CO2 / Temperature / Humidity Monitor
+   ========================================================== */
+
+/* ── Dashboard Content Area ───────────────────────────────── */
+#screen-dashboard {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: var(--sp-12) 0 var(--sp-16);
+  gap: var(--sp-12);
+}
+
+/* ── Vehicle Title (Static) ────────────────────────────────── */
+.vehicle-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 10px;
+  border-radius: var(--radius-8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Connection Status ────────────────────────────────────── */
+.connection-status {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.connection-status .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background var(--dur-norm);
+  position: relative;
+}
+
+.connection-status.online .dot {
+  background: var(--color-success);
+}
+
+.connection-status.online .dot::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid var(--color-success);
+  animation: pulseRing 2s infinite ease-out;
+}
+
+.connection-status.offline .dot {
+  background: var(--color-danger);
+}
+
+/* ── Status Overview ──────────────────────────────────────── */
+.status-overview {
+  text-align: center;
+  margin: var(--sp-8) var(--sp-16) var(--sp-4);
+}
+
+/* ── Gauges Container (Full Height Flex) ───────────────────── */
+.gauges-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  margin: var(--sp-4) 0;
+}
+
+/* Stagger entrance for gauge cards */
+.gauges-container .main-gauge {
+  animation: slideUp var(--dur-slow) var(--ease-out) 0.05s both;
+}
+
+.gauges-container .preview-cards-container {
+  animation: slideUp var(--dur-slow) var(--ease-out) 0.15s both;
+}
+
+/* ── Main Active Gauge (Enlarged) ────────────────────────── */
+/* ── Main Active Gauge (Enlarged Luxury Cockpit) ───────────── */
+.gauge-card.main-gauge {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 var(--sp-16);
+  padding: var(--sp-20) var(--sp-20);
+  background: linear-gradient(145deg, rgba(20, 23, 30, 0.65) 0%, rgba(10, 11, 15, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-24);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.gauge-card.main-gauge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 245, 160, 0.4), rgba(0, 210, 255, 0.4), transparent);
+  pointer-events: none;
+}
+
+.gauge-card.main-gauge .gauge-header {
+  width: 100%;
+  margin-bottom: var(--sp-12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gauge-header-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.metric-carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  background: var(--color-pill-bg);
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  margin-left: auto;
+}
+
+.metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-text-secondary);
+  opacity: 0.35;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.metric-dot:hover {
+  opacity: 0.7;
+}
+
+.metric-dot.active {
+  width: 16px;
+  opacity: 1;
+  border-radius: 4px;
+}
+
+[data-type="co2"] .metric-dot[data-metric="co2"].active {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.55);
+}
+
+[data-type="temp"] .metric-dot[data-metric="temp"].active {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.55);
+}
+
+[data-type="humidity"] .metric-dot[data-metric="humidity"].active {
+  background: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.55);
+}
+
+/* Metric slide animation when swiping between metrics */
+.metric-slide-left {
+  animation: metricSlideLeft 0.25s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+.metric-slide-right {
+  animation: metricSlideRight 0.25s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+@keyframes metricSlideLeft {
+  0% {
+    transform: translate3d(36px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes metricSlideRight {
+  0% {
+    transform: translate3d(-36px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.gauge-card.main-gauge .gauge-svg-container {
+  width: 195px;
+  height: 195px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-card.main-gauge .gauge-sparkline {
+  width: 100%;
+  height: 44px;
+  margin-top: var(--sp-12);
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+/* Gauge Needle Halo & Sparkline Head Pulse Animations */
+@keyframes beadHaloGlow {
+  0%, 100% {
+    opacity: 0.25;
+    r: 7.5;
+  }
+  50% {
+    opacity: 0.6;
+    r: 10;
+  }
+}
+
+.gauge-dot-halo {
+  animation: beadHaloGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulseLiveRing {
+  0% {
+    r: 5;
+    opacity: 0.7;
+  }
+  50% {
+    r: 9.5;
+    opacity: 0;
+  }
+  100% {
+    r: 5;
+    opacity: 0.7;
+  }
+}
+
+.sparkline-pulse-ring {
+  animation: pulseLiveRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Preview Cards (Swappable Metrics) ───────────────────── */
+.preview-cards-container {
+  display: flex;
+  gap: var(--sp-16);
+  margin: 0 var(--sp-16);
+}
+
+.preview-card {
+  flex: 1;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-20);
+  padding: var(--sp-14) var(--sp-14);
+  height: 78px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast),
+              box-shadow var(--dur-fast),
+              background var(--dur-fast);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+}
+
+.preview-card:active {
+  transform: scale(0.97);
+}
+
+.preview-card:hover {
+  background: var(--color-card-bg-hover);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.preview-card-icon {
+  font-size: 1.3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: all var(--dur-norm) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.preview-card-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.preview-card-label {
+  font-size: 0.68rem;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.preview-card-value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Colors matching the metric types with Soft Crisp Accent */
+.preview-card[data-type="co2"] .preview-card-value {
+  color: var(--color-co2);
+}
+.preview-card[data-type="co2"] .preview-card-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-co2);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: none;
+}
+
+.preview-card[data-type="co2"].status-good .preview-card-value {
+  color: var(--color-co2);
+}
+.preview-card[data-type="co2"].status-good .preview-card-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-co2);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: none;
+}
+
+.preview-card[data-type="co2"].status-danger .preview-card-value {
+  color: var(--color-danger);
+}
+.preview-card[data-type="co2"].status-danger .preview-card-icon {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--color-danger);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  box-shadow: none;
+  animation: previewCardDangerPulse 1s infinite ease-in-out;
+}
+
+@keyframes previewCardDangerPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.preview-card[data-type="temp"] .preview-card-value {
+  color: var(--color-temp);
+}
+.preview-card[data-type="temp"] .preview-card-icon {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-temp);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  box-shadow: none;
+}
+
+.preview-card[data-type="humidity"] .preview-card-value {
+  color: var(--color-humidity);
+}
+.preview-card[data-type="humidity"] .preview-card-icon {
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--color-humidity);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: none;
+}
+
+/* ── Last Update ──────────────────────────────────────────── */
+.last-update {
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: var(--sp-8) var(--sp-16) var(--sp-12);
+  animation: breathe 3s ease-in-out infinite;
+}
+
+.last-update::before {
+  content: '⏱ ';
+  opacity: 0.6;
+}
+
+/* Thẻ Trợ lý Sức khỏe Buồng Lái trên màn hình điện thoại di động */
+.desktop-assistant-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  margin: var(--sp-8) var(--sp-16);
+  padding: var(--sp-16) var(--sp-18);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-22);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.assistant-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-10);
+  gap: var(--sp-8);
+}
+
+.assistant-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.assistant-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #10b981;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .assistant-live-badge {
+  color: #059669;
+  background: rgba(5, 150, 105, 0.1);
+  border-color: rgba(5, 150, 105, 0.25);
+}
+
+.assistant-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+  animation: liveBeacon 1.8s ease-in-out infinite;
+}
+
+[data-theme="light"] .assistant-live-dot {
+  background: #059669;
+  box-shadow: 0 0 6px rgba(5, 150, 105, 0.4);
+}
+
+@keyframes liveBeacon {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+.assistant-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.assistant-tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-16);
+  transition: all var(--dur-fast);
+}
+
+.assistant-tip-item.warn-active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.03) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  box-shadow: 0 4px 18px -2px rgba(245, 158, 11, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.assistant-tip-item.danger-active {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(244, 63, 94, 0.03) 100%);
+  border: 1px solid rgba(244, 63, 94, 0.22);
+  box-shadow: 0 4px 18px -2px rgba(244, 63, 94, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] .assistant-tip-item {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .assistant-tip-item.warn-active {
+  background: #fffbeb;
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.1);
+}
+
+[data-theme="light"] .assistant-tip-item.danger-active {
+  background: #fff1f2;
+  border-color: rgba(244, 63, 94, 0.3);
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.1);
+}
+
+.tip-item-icon {
+  font-size: 1.1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-10);
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .tip-item-icon {
+  background: #f1f5f9;
+  border: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.tip-item-content h4 {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--color-text-primary);
+}
+
+.tip-item-content p {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+/* ── Day Mode (Light Theme) Overrides for Dashboard ──────── */
+[data-theme="light"] .gauge-card.main-gauge {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 14px 34px -8px rgba(15, 23, 42, 0.06), 0 2px 8px -1px rgba(15, 23, 42, 0.02), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .preview-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: 0 8px 22px -4px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .preview-card:hover {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.12);
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .preview-card-value {
+  text-shadow: none !important;
+}
+
+[data-theme="light"] .preview-card[data-type="temp"] .preview-card-icon {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .preview-card[data-type="humidity"] .preview-card-icon {
+  background: #f0f9ff !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .preview-card[data-type="co2"] .preview-card-icon {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .status-badge.good {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .status-badge.warning {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .status-badge.danger {
+  background: #fff1f2 !important;
+  color: #be123c !important;
+  border: 1px solid #fecdd3 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="light"] .gauge-desc {
+  color: #334155 !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  font-weight: 500;
+}
+
+[data-theme="light"] .last-update {
+  color: #64748b;
+}
+
+/* ── SVG Gauge Theming ── */
+.gauge-unit-text {
+  fill: var(--color-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: fill var(--dur-norm) var(--ease-out);
+}
+
+[data-theme="light"] .gauge-unit-text {
+  fill: #334155 !important;
+  font-weight: 700;
+}
+
+.gauge-range-marker {
+  fill: var(--color-text-secondary);
+  opacity: 0.55;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  transition: fill var(--dur-norm) var(--ease-out);
+}
+
+[data-theme="light"] .gauge-range-marker {
+  fill: #475569 !important;
+  opacity: 0.9;
+  font-weight: 700;
+}
+
+.gauge-rim {
+  stroke: var(--color-border);
+  transition: stroke var(--dur-norm) var(--ease-out);
+}
+
+.gauge-bg-track {
+  stroke: var(--color-gauge-bg-track);
+  transition: stroke var(--dur-norm) var(--ease-out);
+}
+

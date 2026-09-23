@@ -1,0 +1,17 @@
+{
+  "name": "Car Air Monitor - Giám Sát Không Khí Cabin",
+  "short_name": "CarAir",
+  "description": "Giám sát nồng độ CO2 (T6703), nhiệt độ và độ ẩm (SHT35) khoang cabin ô tô",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0d14",
+  "theme_color": "#0a0d14",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%230a0d14' stroke='%2300e5ff' stroke-width='4'/><path d='M25 65 C25 45 40 40 50 30 C60 40 75 45 75 65 C75 78 63 82 50 82 C37 82 25 78 25 65 Z' fill='none' stroke='%2300e5ff' stroke-width='4'/><circle cx='50' cy='55' r='8' fill='%2300e676'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
