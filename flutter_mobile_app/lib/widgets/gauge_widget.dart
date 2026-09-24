@@ -10,6 +10,7 @@ class GaugeWidget extends StatelessWidget {
   final Color accentColor;
   final double progress; // 0.0 to 1.0
   final Widget? footer;
+  final List<double>? history;
 
   const GaugeWidget({
     super.key,
@@ -21,6 +22,7 @@ class GaugeWidget extends StatelessWidget {
     required this.accentColor,
     required this.progress,
     this.footer,
+    this.history,
   });
 
   @override
@@ -75,52 +77,69 @@ class GaugeWidget extends StatelessWidget {
           SizedBox(
             width: 170,
             height: 150,
-            child: CustomPaint(
-              painter: _GaugePainter(
-                progress: progress.clamp(0.0, 1.0),
-                accentColor: accentColor,
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w900,
-                        color: accentColor,
-                        fontFamily: 'monospace',
-                        letterSpacing: -1,
+            child: Stack(
+              children: [
+                if (history != null && history!.isNotEmpty)
+                  Positioned(
+                    bottom: 0,
+                    left: 20,
+                    right: 20,
+                    height: 50,
+                    child: CustomPaint(
+                      painter: _SparklinePainter(
+                        data: history!,
+                        color: accentColor.withOpacity(0.3),
                       ),
                     ),
-                    Text(
-                      unit,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF64748B),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: accentColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        statusText,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: accentColor,
+                  ),
+                CustomPaint(
+                  painter: _GaugePainter(
+                    progress: progress.clamp(0.0, 1.0),
+                    accentColor: accentColor,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          value,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                            color: accentColor,
+                            fontFamily: 'monospace',
+                            letterSpacing: -1,
+                          ),
                         ),
-                      ),
+                        Text(
+                          unit,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF64748B),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            statusText,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: accentColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           if (footer != null) ...[
@@ -131,6 +150,46 @@ class GaugeWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SparklinePainter extends CustomPainter {
+  final List<double> data;
+  final Color color;
+
+  _SparklinePainter({required this.data, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (data.length < 2) return;
+
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..strokeJoin = StrokeJoin.round;
+
+    final maxVal = data.reduce(max);
+    final minVal = data.reduce(min);
+    final range = maxVal - minVal == 0 ? 1 : maxVal - minVal;
+
+    final path = Path();
+    final dx = size.width / (data.length - 1);
+
+    for (int i = 0; i < data.length; i++) {
+      final x = i * dx;
+      final y = size.height - ((data[i] - minVal) / range) * size.height;
+      if (i == 0) {
+        path.moveTo(x, y);
+      } else {
+        path.lineTo(x, y);
+      }
+    }
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _SparklinePainter oldDelegate) => true;
 }
 
 class _GaugePainter extends CustomPainter {
@@ -147,7 +206,6 @@ class _GaugePainter extends CustomPainter {
     const startAngle = 135 * (pi / 180);
     const sweepTotal = 270 * (pi / 180);
 
-    // Track nền xám
     final bgPaint = Paint()
       ..color = const Color(0xFF1E2636)
       ..style = PaintingStyle.stroke
@@ -162,7 +220,6 @@ class _GaugePainter extends CustomPainter {
       bgPaint,
     );
 
-    // Vòng cung tiến độ sáng màu
     final activePaint = Paint()
       ..color = accentColor
       ..style = PaintingStyle.stroke

@@ -105,56 +105,40 @@ class DashboardScreen extends StatelessWidget {
             _buildAlertBanner(data),
             const SizedBox(height: 16),
 
-            // 1. Đồng hồ CO2 (Telaire T6703)
-            GaugeWidget(
-              title: 'Nồng độ CO₂ Trong Cabin',
-              sensorModel: 'Telaire T6703 NDIR',
-              value: data.co2.toString(),
-              unit: 'PPM',
-              statusText: data.co2StatusText,
-              accentColor: data.co2Color,
-              progress: (data.co2 - 400) / (2500 - 400),
-              footer: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text('Thấp nhất: ${provider.minCo2} ppm',
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
-                  Text('Cao nhất: ${provider.maxCo2} ppm',
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
-                ],
-              ),
-            ),
-            const SizedBox(height: 14),
-
-            // 2. Đồng hồ Nhiệt độ (SHT35)
-            GaugeWidget(
-              title: 'Nhiệt Độ Cabin',
-              sensorModel: 'Sensirion SHT35',
-              value: data.temperature.toStringAsFixed(1),
-              unit: '°C',
-              statusText: data.temperature > 35 ? 'Rất nóng' : 'Dễ chịu',
-              accentColor: data.temperature > 35 ? const Color(0xFFFF3D71) : const Color(0xFF00E5FF),
-              progress: (data.temperature - 15) / (50 - 15),
-              footer: Text(
-                'Chỉ số nhiệt (Heat Index): ${data.heatIndex.toStringAsFixed(1)}°C',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-              ),
-            ),
-            const SizedBox(height: 14),
-
-            // 3. Đồng hồ Độ ẩm (SHT35)
-            GaugeWidget(
-              title: 'Độ Ẩm Tương Đối',
-              sensorModel: 'Sensirion SHT35',
-              value: data.humidity.toStringAsFixed(0),
-              unit: '% RH',
-              statusText: data.humidity > 75 ? 'Nguy cơ mờ kính' : 'Cân bằng',
-              accentColor: const Color(0xFF38BDF8),
-              progress: data.humidity / 100,
-              footer: Text(
-                'Điểm sương (Dew Point): ${data.dewPoint.toStringAsFixed(1)}°C',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-              ),
+            // Responsive Gauge Grid
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth > 600;
+                final double itemWidth = isWide ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth;
+                return Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: [
+                    SizedBox(width: itemWidth, child: GaugeWidget(
+                        title: 'CO2 Cabin', sensorModel: 'Telaire T6703 NDIR',
+                        value: data.co2.toString(), unit: 'PPM', statusText: data.co2StatusText,
+                        accentColor: data.co2Color, progress: (data.co2 - 400) / (2500 - 400),
+                        history: provider.tripHistory.map((d) => d.co2.toDouble()).toList(),
+                        footer: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                            Text('Min: ${provider.minCo2} ppm', style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                            Text('Max: ${provider.maxCo2} ppm', style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
+                        ]))),
+                    SizedBox(width: itemWidth, child: GaugeWidget(
+                        title: 'Nhiet Do Cabin', sensorModel: 'Sensirion SHT35',
+                        value: data.temperature.toStringAsFixed(1), unit: '�C',
+                        statusText: data.temperature > 35 ? 'Nong' : 'De chiu',
+                        accentColor: data.temperature > 35 ? const Color(0xFFFF3D71) : const Color(0xFF00E5FF),
+                        progress: (data.temperature - 15) / (50 - 15),
+                        history: provider.tripHistory.map((d) => d.temperature).toList())),
+                    SizedBox(width: itemWidth, child: GaugeWidget(
+                        title: 'Do Am', sensorModel: 'Sensirion SHT35',
+                        value: data.humidity.toStringAsFixed(0), unit: '% RH',
+                        statusText: data.humidity > 75 ? 'Mo kinh' : 'Can bang',
+                        accentColor: const Color(0xFF38BDF8), progress: data.humidity / 100,
+                        history: provider.tripHistory.map((d) => d.humidity).toList())),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
 
