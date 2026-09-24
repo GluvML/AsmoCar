@@ -34,6 +34,13 @@ def patch_ios():
         with open(pbxproj_path, "r", encoding="utf-8") as f:
             p_content = f.read()
 
+        # Add dummy DEVELOPMENT_TEAM so Flutter CLI does not block building for device
+        if 'DEVELOPMENT_TEAM = "";' in p_content:
+            p_content = p_content.replace('DEVELOPMENT_TEAM = "";', 'DEVELOPMENT_TEAM = ABCD123456;')
+        elif 'DEVELOPMENT_TEAM' not in p_content:
+            p_content = p_content.replace('PRODUCT_BUNDLE_IDENTIFIER =', 'DEVELOPMENT_TEAM = ABCD123456;\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =')
+
+        p_content = p_content.replace('CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;')
         p_content = p_content.replace('CODE_SIGN_IDENTITY = "iPhone Developer";', 'CODE_SIGN_IDENTITY = "";')
         p_content = p_content.replace('CODE_SIGNING_REQUIRED = YES;', 'CODE_SIGNING_REQUIRED = NO;')
         p_content = p_content.replace('CODE_SIGNING_ALLOWED = YES;', 'CODE_SIGNING_ALLOWED = NO;')

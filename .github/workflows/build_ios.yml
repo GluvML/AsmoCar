@@ -25,7 +25,7 @@ jobs:
       - name: Check Flutter Version
         run: flutter --version
 
-      - name: Prepare iOS Project & Permissions
+      - name: Prepare iOS Project Platform
         working-directory: flutter_mobile_app
         run: |
           # 1. Tạo platform iOS nếu chưa có
@@ -47,27 +47,45 @@ jobs:
             /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes:1 string audio" "$INFO_PLIST" || true
           fi
 
-          # 3. Chạy script chuẩn bị Podfile & pbxproj
+          # 3. Tạo cấu hình build và Podfile chuẩn của Flutter
+          flutter pub get
+          flutter build ios --config-only
+
+          # 4. Patch Podfile & project.pbxproj với Team giả lập và iOS 13+
           python3 ../.github/scripts/prepare_ios.py
 
-      - name: Install Dependencies
-        working-directory: flutter_mobile_app
-        run: |
-          flutter pub get
+          # 5. Cài đặt Pods
           cd ios
           pod install --repo-update
           cd ..
 
-      - name: Build iOS Release (.app)
+      - name: Build iOS Release App
         working-directory: flutter_mobile_app
         run: |
-          flutter build ios --release --no-codesign
+          echo "Building iOS App..."
+          flutter build ios --release --no-codesign || {
+            echo "Direct flutter build blocked by signing check, compiling via xcodebuild..."
+            xcodebuild -workspace ios/Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -derivedDataPath build/DerivedData \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="" \
+              build
+          }
 
       - name: Package Payload into .IPA
         working-directory: flutter_mobile_app
         run: |
           mkdir -p Payload
-          cp -r build/ios/iphoneos/Runner.app Payload/
+          APP_PATH=$(find build -name "Runner.app" -type d | grep "Release-iphoneos" | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
+          fi
+          echo "Found compiled app at: $APP_PATH"
+          cp -r "$APP_PATH" Payload/
           zip -r AtmoCar-iOS.ipa Payload
           echo "IPA package created successfully!"
           ls -lh AtmoCar-iOS.ipa

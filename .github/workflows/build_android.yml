@@ -30,15 +30,7 @@ jobs:
 
       - name: Prepare Android Project
         working-directory: flutter_mobile_app
-        run: |
-          if [ ! -f "android/build.gradle" ] && [ ! -f "android/build.gradle.kts" ]; then
-            echo "Re-generating Android platform structure..."
-            mkdir -p /tmp/backup_manifest
-            cp android/app/src/main/AndroidManifest.xml /tmp/backup_manifest/ || true
-            rm -rf android
-            flutter create . --platforms=android --org=com.atmocar
-            cp /tmp/backup_manifest/AndroidManifest.xml android/app/src/main/AndroidManifest.xml || true
-          fi
+        run: python3 ../.github/scripts/prepare_android.py
 
       - name: Install Dependencies
         working-directory: flutter_mobile_app
