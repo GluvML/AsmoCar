@@ -22,36 +22,67 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Check Flutter Version
-        run: flutter --version
+      - name: Check Flutter & Xcode
+        run: |
+          flutter --version
+          xcodebuild -version
 
-      - name: Prepare iOS Project and Permissions
+      - name: Prepare iOS Project & Permissions
         working-directory: flutter_mobile_app
         run: |
-          # Tự động tạo thư mục ios nếu chưa có
+          # 1. Tạo platform iOS nếu chưa có
           if [ ! -d "ios" ]; then
             echo "Creating iOS project platform..."
             flutter create . --platforms=ios --org=com.atmocar
           fi
 
-          # Cập nhật Info.plist với quyền Bluetooth, Mạng nội bộ, Âm thanh cảnh báo
+          # 2. Cập nhật Info.plist
           INFO_PLIST="ios/Runner/Info.plist"
           if [ -f "$INFO_PLIST" ]; then
             echo "Injecting iOS Permissions into Info.plist..."
-            # Cập nhật tên hiển thị trên màn hình iPhone
             /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName AtmoCar" "$INFO_PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string AtmoCar" "$INFO_PLIST"
-            
-            # Quyền Bluetooth BLE
             /usr/libexec/PlistBuddy -c "Add :NSBluetoothAlwaysUsageDescription string 'AtmoCar can ket noi Bluetooth BLE de doc du lieu cam bien CO2 va nhiet am tu thiet bi tren xe.'" "$INFO_PLIST" || true
             /usr/libexec/PlistBuddy -c "Add :NSBluetoothPeripheralUsageDescription string 'AtmoCar can ket noi Bluetooth BLE voi cam bien buong lai xe.'" "$INFO_PLIST" || true
-            
-            # Quyền Wi-Fi mạng nội bộ
             /usr/libexec/PlistBuddy -c "Add :NSLocalNetworkUsageDescription string 'AtmoCar can ket noi mang Wi-Fi de nhan du lieu thoi gian thuc tu ESP32.'" "$INFO_PLIST" || true
-            
-            # Chạy ngầm Bluetooth nhận cảnh báo
             /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes array" "$INFO_PLIST" || true
             /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes:0 string bluetooth-central" "$INFO_PLIST" || true
             /usr/libexec/PlistBuddy -c "Add :UIBackgroundModes:1 string audio" "$INFO_PLIST" || true
+          fi
+
+          # 3. Cấu hình Podfile: Yêu cầu iOS 13.0+ cho flutter_blue_plus & Tắt Code Sign Pods
+          PODFILE="ios/Podfile"
+          if [ -f "$PODFILE" ]; then
+            echo "Configuring Podfile for iOS 13.0+..."
+            sed -i '' "s/# platform :ios, '12.0'/platform :ios, '13.0'/g" "$PODFILE" || true
+            sed -i '' "s/# platform :ios, '11.0'/platform :ios, '13.0'/g" "$PODFILE" || true
+            if ! grep -q "platform :ios" "$PODFILE"; then
+              sed -i '' "1s/^/platform :ios, '13.0'\n/" "$PODFILE"
+            fi
+
+            # Thêm cấu hình Deployment Target 13.0 vào post_install
+            python3 -c "
+with open('$PODFILE', 'r') as f:
+    content = f.read()
+target_block = '''flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+    end'''
+if 'flutter_additional_ios_build_settings(target)' in content:
+    content = content.replace('flutter_additional_ios_build_settings(target)', target_block)
+    with open('$PODFILE', 'w') as f:
+        f.write(content)
+"
+          fi
+
+          # 4. Tắt yêu cầu Code Signing trên Runner target trong project.pbxproj
+          PBXPROJ="ios/Runner.xcodeproj/project.pbxproj"
+          if [ -f "$PBXPROJ" ]; then
+            echo "Patching project.pbxproj to allow unsigned build..."
+            sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "";/g' "$PBXPROJ" || true
+            sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' "$PBXPROJ" || true
+            sed -i '' 's/CODE_SIGNING_ALLOWED = YES;/CODE_SIGNING_ALLOWED = NO;/g' "$PBXPROJ" || true
           fi
 
       - name: Install Dependencies
